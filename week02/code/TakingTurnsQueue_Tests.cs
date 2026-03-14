@@ -8,7 +8,23 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 public class TakingTurnsQueueTests
 {
     [TestMethod]
-    // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
+    // Result: PASS after fixes.
+// Issue(s) originally observed: None. The implementation throws InvalidOperationException with message "No one in the queue." as expected.
+// Fix: No change required.
+// Result: PASS after fixes.
+// Issue(s) originally observed: Infinite-turns participant (negative Turns) not handled correctly—could be dropped or decremented.
+// Fix: Treat <= 0 as infinite: never decrement and always re-enqueue; preserve original negative Turns value.
+// Result: PASS after fixes.
+// Issue(s) originally observed: Infinite-turns participant (Turns == 0) was not always re-enqueued and/or had Turns mutated.
+// Fix: Treat <= 0 as infinite: never decrement and always re-enqueue; preserve original Turns value (0).
+// Result: PASS after fixes.
+// Issue(s) originally observed: Same re-enqueue bug as above led to incorrect order once a new player was added mid-rotation.
+// Fix: Apply correct post-decrement re-enqueue rule; sequence now matches expected.
+// Result: PASS after fixes.
+// Issue(s) originally observed: Finite-turn participants were re-enqueued only when Turns > 1 (checked before decrement),
+// causing off-by-one behavior and wrong sequence completion.
+// Fix: Dequeue then decrement (for finite), re-enqueue only if remaining > 0; infinite turns unchanged.
+// Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
